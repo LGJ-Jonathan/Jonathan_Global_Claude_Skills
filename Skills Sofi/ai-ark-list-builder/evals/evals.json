@@ -1,0 +1,58 @@
+{
+  "skill_name": "ai-ark-list-builder",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Build me a lead list from this audience targeting doc: evals/files/test-audience-targeting.md",
+      "expected_output": "Two API queries built (one per segment) with correct filters, presented for user validation before any API calls",
+      "files": ["evals/files/test-audience-targeting.md"],
+      "expectations": [
+        "First output is the built query JSON, not API results",
+        "Two separate queries were built (one for Gyms, one for Med Spas)",
+        "Industries filter uses valid values from industries.json (e.g., 'wellness and fitness services' for gyms, 'medical practices' for med spas)",
+        "Location includes 'United States' and excludes 'Nevada' and 'Arizona'",
+        "Seniority includes 'Owner' and 'Founder' but NOT 'CXO' or 'President'",
+        "Does NOT use contact.title include filter (it is broken)",
+        "Does NOT use contact.department or contact.skills filters (they are broken)",
+        "Company type includes 'PRIVATELY_HELD' and 'SELF_OWNED'",
+        "Segment A employee size range is 1-50",
+        "Segment B employee size range is 1-25",
+        "Founded year range ends at 2023 or earlier",
+        "API credits were checked before building queries",
+        "User was asked to validate before any API call was made",
+        "A filter summary table was shown for each segment"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "I need to pull a lead list for the gym and med spa targeting. The doc is at evals/files/test-audience-targeting.md",
+      "expected_output": "Skill triggered, audience doc parsed, both segments identified with filter summary and JSON queries presented",
+      "files": ["evals/files/test-audience-targeting.md"],
+      "expectations": [
+        "Skill was triggered (recognized lead list building intent)",
+        "Audience targeting document was read and parsed correctly",
+        "Both segments were identified and separated (Gyms and Med Spas)",
+        "Filter summary table was shown for each segment",
+        "Full JSON query was presented for each segment in a code block",
+        "No API calls were made before user approval",
+        "Keyword source 'KEYWORD' was not used (it is broken)",
+        "industries.json was read to validate industry names"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Build a lead list from evals/files/test-audience-targeting.md. Make sure to use keyword filters for 'CrossFit' and 'boutique fitness' in addition to all the other filters.",
+      "expected_output": "Queries built with keyword filters using DESCRIPTION+INDUSTRY sources, with a warning about filter stacking",
+      "files": ["evals/files/test-audience-targeting.md"],
+      "expectations": [
+        "Keyword filter was included with content 'CrossFit' and 'boutique fitness'",
+        "Keyword sources include 'DESCRIPTION' and/or 'INDUSTRY' but never 'KEYWORD'",
+        "A warning was shown about filter stacking (many filters may return 0 results)",
+        "Skill suggested starting with broader filters first",
+        "Query was still built as requested despite the warning",
+        "User was asked to validate before any API execution",
+        "Seniority does NOT include 'CXO' or 'President'"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "skill_name": "bison-campaign-creator",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "hey can you create the campaigns from this document in Bison? the file is at evals/files/test-campaigns.md. Create them under Derek Hobbs",
+      "expected_output": "Two campaigns created in Bison under Derek Hobbs with correct names, day spacing, spintax, and thread reply subjects",
+      "files": ["evals/files/test-campaigns.md"],
+      "expectations": [
+        "Exactly 2 campaigns were created in Bison",
+        "Campaigns were created under client 'Derek Hobbs'",
+        "Campaign 1 name contains 'CAMPAIGN 1: RESTAURANT GROWTH CAPITAL' and today's date",
+        "Campaign 2 name contains 'CAMPAIGN 2: KITCHEN EQUIPMENT UPGRADE' and today's date",
+        "Campaign 1 has Day 0 and Day 5 steps",
+        "Campaign 2 has Day 0 and Day 4 steps",
+        "Email 2 subjects are prefixed with 'Re:'",
+        "Spintax preserved verbatim in email bodies",
+        "Email 1 includes full signature block",
+        "Email 2 ends with just 'Derek'"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "I need to load these campaign sequences into Bison for a client. The doc is evals/files/test-campaigns.md",
+      "expected_output": "Skill asks for client, shows validation summary, creates both campaigns correctly",
+      "files": ["evals/files/test-campaigns.md"],
+      "expectations": [
+        "Exactly 2 campaigns were created in Bison",
+        "Client name was confirmed or inferred before creating",
+        "A validation summary table was shown before creating",
+        "Campaign names include today's date",
+        "Day spacing matches document (Day 5 and Day 4)",
+        "Spintax preserved verbatim",
+        "Email 2 subjects prefixed with 'Re:'"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "create bison campaigns from the sequences document at evals/files/test-campaigns.md. these go under Derek Hobbs workspace",
+      "expected_output": "Both campaigns created with correct day numbers, spintax, and escape characters stripped",
+      "files": ["evals/files/test-campaigns.md"],
+      "expectations": [
+        "Exactly 2 campaigns were created in Bison",
+        "Campaigns created under 'Derek Hobbs'",
+        "Campaign names include today's date in MM/DD/YYYY",
+        "Campaign 1 uses Day 0 and Day 5 (not Day 3)",
+        "Campaign 2 uses Day 0 and Day 4 (not Day 3)",
+        "Spintax preserved verbatim",
+        "Email 2 subjects prefixed with 'Re:'",
+        "Escape characters stripped (no backslashes before # or _)"
+      ]
+    }
+  ]
+}
