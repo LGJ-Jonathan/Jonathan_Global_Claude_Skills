@@ -16,7 +16,33 @@
 
 set -euo pipefail
 
-CREDS_FILE="${GWS_CREDENTIALS:-/home/node/.config/gws/credentials.json}"
+# If the native `gws` binary is on PATH (e.g. macOS via homebrew), defer to it.
+# The curl/OAuth fallback below is only needed in Linux containers where the
+# native binary fails on GLIBC mismatch.
+if command -v gws >/dev/null 2>&1; then
+  # Translate the dotted "service.resource[.subresource] action" form into
+  # the native binary's "service resource [subresource] action --params JSON
+  # [--body JSON]" form. Examples:
+  #   gws.sh gmail.users.messages list '{"userId":"me"}'
+  #     -> gws gmail users messages list --params '{"userId":"me"}'
+  #   gws.sh sheets.spreadsheets get '{"spreadsheetId":"X"}'
+  #     -> gws sheets spreadsheets get --params '{"spreadsheetId":"X"}'
+  if [ "$#" -ge 2 ]; then
+    IFS='.' read -r -a parts <<< "$1"
+    action="$2"
+    args=("${parts[@]}" "$action")
+    if [ "$#" -ge 3 ] && [ -n "$3" ]; then
+      args+=(--params "$3")
+    fi
+    if [ "$#" -ge 4 ] && [ -n "$4" ]; then
+      args+=(--json "$4")
+    fi
+    exec gws "${args[@]}"
+  fi
+  exec gws "$@"
+fi
+
+CREDS_FILE="${GWS_CREDENTIALS:-$HOME/.config/gws/credentials.json}"
 TOKEN_CACHE="/tmp/gws_token_cache"
 
 # ── Token management ─────────────────────────────────────────
